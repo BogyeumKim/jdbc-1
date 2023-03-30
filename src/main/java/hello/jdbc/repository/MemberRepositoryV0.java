@@ -72,6 +72,52 @@ public class MemberRepositoryV0 {
 
     }
 
+    public void update(String memberId, int money) throws SQLException {
+        String sql = "update member set money = ? where member_Id = ?";
+
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+
+        try {
+            conn = getConnection();
+            pstmt = conn.prepareStatement(sql);
+
+            pstmt.setInt(1,money);
+            pstmt.setString(2,memberId);
+
+            int resultsize = pstmt.executeUpdate();
+            log.info("resultSize ={}",resultsize);
+
+        } catch (SQLException e) {
+            log.error("db error",e);
+            throw e;
+        } finally {
+            close(conn,pstmt,null);
+        }
+
+    }
+
+    public void delete(String memberId) throws SQLException {
+        String sql = "delete from member where member_id=?";
+
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+
+        try {
+            conn = getConnection();
+            pstmt = conn.prepareStatement(sql);
+
+            pstmt.setString(1,memberId);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            log.error("db error",e);
+            throw e;
+        } finally {
+            close(conn,pstmt,null);
+        }
+
+    }
+
     /* finally에서 따로 메소드로 뺀 이유는 pstmt가 에러나면 conn도 안닫히기때문에*/
     private void close(Connection conn, Statement pstmt, ResultSet rs) {
 
